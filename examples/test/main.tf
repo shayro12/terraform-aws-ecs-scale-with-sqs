@@ -44,7 +44,7 @@ module "td" {
 
 module "service" {
   source              = "cn-terraform/ecs-fargate-service/aws"
-  name_prefix         = "test-service"
+  name_prefix         = "test"
   vpc_id              = module.vpc.vpc_id
   ecs_cluster_arn     = module.cluster.aws_ecs_cluster_cluster_arn
   task_definition_arn = module.td.aws_ecs_task_definition_td_arn
