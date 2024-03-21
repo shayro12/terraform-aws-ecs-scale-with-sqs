@@ -9,7 +9,7 @@ on:
     types: [published]
 
 env:
-  DEFAULT_REGION: us-east-2
+  DEFAULT_REGION: us-east-1
   AWS_ACCESS_KEY_ID: localstack
   AWS_SECRET_ACCESS_KEY: localstack
 
