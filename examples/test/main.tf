@@ -1,4 +1,3 @@
-data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
 output "is_localstack" {
   value = data.aws_caller_identity.current.id == "000000000000"
@@ -8,7 +7,7 @@ locals {
   name     = "test-autoscaling"
   region   = "us-east-1"
   vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = ["us-east-1a", "us-east-1b", "us-east-1c"]
   tags = {
     Example    = local.name
     GithubRepo = "terraform-aws-vpc"
