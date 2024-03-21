@@ -52,6 +52,7 @@ module "service" {
   private_subnets     = module.vpc.private_subnets
   container_name      = "test"
   enable_autoscaling  = false
+  custom_lb_arn       = "no alb"
 }
 module "sqs" {
   source  = "terraform-aws-modules/sqs/aws"
