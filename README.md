@@ -192,8 +192,58 @@ output:
   mode: inject
   template: |-
     <!-- BEGIN_TF_DOCS -->
-    {{ .Content }}
-    <!-- END_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~>5.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_appautoscaling_policy.scale_down_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy) | resource |
+| [aws_appautoscaling_policy.scale_up_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy) | resource |
+| [aws_appautoscaling_target.scale_target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_target) | resource |
+| [aws_cloudwatch_metric_alarm.custom_high](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+| [aws_cloudwatch_metric_alarm.custom_low](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_cooldown"></a> [cooldown](#input\_cooldown) | n/a | `number` | `300` | no |
+| <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | n/a | `string` | `"dev-cluster"` | no |
+| <a name="input_ecs_service_name"></a> [ecs\_service\_name](#input\_ecs\_service\_name) | n/a | `string` | `"dev-MonitorWorker"` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `any` | n/a | yes |
+| <a name="input_max_evaluation_period"></a> [max\_evaluation\_period](#input\_max\_evaluation\_period) | n/a | `number` | `2` | no |
+| <a name="input_max_period"></a> [max\_period](#input\_max\_period) | n/a | `number` | `10` | no |
+| <a name="input_max_threshold"></a> [max\_threshold](#input\_max\_threshold) | n/a | `number` | `20` | no |
+| <a name="input_metric_name"></a> [metric\_name](#input\_metric\_name) | n/a | `string` | `"ApproximateNumberOfMessagesVisible"` | no |
+| <a name="input_min_evaluation_period"></a> [min\_evaluation\_period](#input\_min\_evaluation\_period) | n/a | `number` | `2` | no |
+| <a name="input_min_period"></a> [min\_period](#input\_min\_period) | n/a | `number` | `10` | no |
+| <a name="input_min_threshold"></a> [min\_threshold](#input\_min\_threshold) | n/a | `number` | `100` | no |
+| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | n/a | `string` | `"sqs"` | no |
+| <a name="input_scale_target_max_capacity"></a> [scale\_target\_max\_capacity](#input\_scale\_target\_max\_capacity) | n/a | `number` | `12` | no |
+| <a name="input_scale_target_min_capacity"></a> [scale\_target\_min\_capacity](#input\_scale\_target\_min\_capacity) | n/a | `number` | `1` | no |
+| <a name="input_step_adjustment_lower_bound"></a> [step\_adjustment\_lower\_bound](#input\_step\_adjustment\_lower\_bound) | n/a | `list` | <pre>[<br>  {<br>    "metric_interval_lower_bound": "",<br>    "metric_interval_upper_bound": "-80",<br>    "scaling_adjustment": "2"<br>  },<br>  {<br>    "metric_interval_lower_bound": "-80",<br>    "metric_interval_upper_bound": "-50",<br>    "scaling_adjustment": "4"<br>  },<br>  {<br>    "metric_interval_lower_bound": "-50",<br>    "metric_interval_upper_bound": "0",<br>    "scaling_adjustment": "8"<br>  }<br>]</pre> | no |
+| <a name="input_step_adjustment_upper_bound"></a> [step\_adjustment\_upper\_bound](#input\_step\_adjustment\_upper\_bound) | n/a | `list` | <pre>[<br>  {<br>    "metric_interval_lower_bound": "0",<br>    "metric_interval_upper_bound": "30",<br>    "scaling_adjustment": "4"<br>  },<br>  {<br>    "metric_interval_lower_bound": "30",<br>    "metric_interval_upper_bound": "80",<br>    "scaling_adjustment": "8"<br>  },<br>  {<br>    "metric_interval_lower_bound": "80",<br>    "metric_interval_upper_bound": "",<br>    "scaling_adjustment": "10"<br>  }<br>]</pre> | no |
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->
 
 output-values:
   enabled: false
