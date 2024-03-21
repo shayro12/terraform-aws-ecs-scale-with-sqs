@@ -36,7 +36,6 @@ variable "ecs_service_name" {
 variable "name_prefix" {
   default = "sqs"
 }
-variable "environment" {}
 variable "cooldown" {
   default = 300
 }
