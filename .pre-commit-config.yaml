@@ -5,8 +5,8 @@ repos:
       - id: terraform_fmt
       - id: terraform_validate
       - id: terraform_docs
-  # - repo: https://github.com/terraform-docs/terraform-docs
-  #   rev: "v0.17.0"
-  #   hooks:
-  #     - id: terraform-docs-go
-  #       args: ["markdown", "table", "--output-file", "README.md", "."]
+        args:
+        - --hook-config=--path-to-file=README.md        # Valid UNIX path. I.e. ../TFDOC.md or docs/README.md etc.
+        - --hook-config=--add-to-existing-file=true     # Boolean. true or false
+        - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
+        - --hook-config=--use-standard-markers=true     # Boolean. Defaults in v1.x to false. Set to true for compatibility with terraform-docs

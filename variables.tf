@@ -1,79 +1,119 @@
 variable "metric_name" {
-  default = "ApproximateNumberOfMessagesVisible"
-
+  default     = "ApproximateNumberOfMessagesVisible"
+  description = "value of the metric to be used for scaling , set to ApproximateNumberOfMessagesVisible for SQS by default but can be changed to any other metric"
+  type        = string
 }
 variable "min_evaluation_period" {
-  default = 2
+  default     = 1
+  description = "minimum evaluation period for the alarm"
 }
 variable "min_period" {
-  default = 10
+  default     = 60
+  description = "minimum period for the alarm in seconds"
+  type        = number
 }
 variable "max_evaluation_period" {
-  default = 2
+  default     = 1
+  description = "maximum evaluation period for the alarm"
+  type        = number
+
 }
 variable "max_period" {
-  default = 10
+  default     = 10
+  description = "maximum period for the alarm in seconds"
+  type        = number
 }
 variable "scale_target_max_capacity" {
-  default = 12
+  default     = 10
+  description = "maximum capacity for the target"
+  type        = number
 }
 variable "scale_target_min_capacity" {
-  default = 1
+  default     = 1
+  description = "minimum capacity for the target"
+  type        = number
 }
 variable "min_threshold" {
-  default = 100
+  default     = 100
+  description = <<EOT
+  threshold for the scale down policy
+  eg. if the threshold is 100 and the metric value is 90, the scale down policy will be triggered
+  EOT
 }
 variable "max_threshold" {
-  default = 20
+  default     = 2
+  description = <<EOT
+  threshold for the scale up policy
+  eg. if the threshold is 2 and the metric value is 3, the scale up policy will be triggered
+  EOT
 
 }
 variable "ecs_cluster_name" {
-  default = "dev-cluster"
+  description = "name of the ECS cluster"
+
+
 }
 variable "ecs_service_name" {
-  default = "dev-MonitorWorker"
+  description = "name of the ECS service"
 }
 variable "name_prefix" {
   default = "sqs"
 }
 variable "cooldown" {
-  default = 300
+  default = 60
 }
 variable "step_adjustment_lower_bound" {
   default = [
-    {
+    { # because Min therehold is 100 
+      # when SQS messages are lower than 20 scale to 2
       metric_interval_lower_bound = ""
-      metric_interval_upper_bound = "-80"
-      scaling_adjustment          = "2"
+      metric_interval_upper_bound = "-90"
+      scaling_adjustment          = "1"
     },
-    {
-      metric_interval_lower_bound = "-80"
+    { # when SQS messages are between 50 to 10 scale to 4
+      metric_interval_lower_bound = "-90"
       metric_interval_upper_bound = "-50"
-      scaling_adjustment          = "4"
+      scaling_adjustment          = "5"
     },
-    {
+    { # when SQS messages are between 100 to 50 scale to 8
       metric_interval_lower_bound = "-50"
       metric_interval_upper_bound = "0"
-      scaling_adjustment          = "8"
+      scaling_adjustment          = "10"
     }
   ]
+  description = <<EOT
+  a list of maps containing the lower bound for the step adjustment (scaling down) 
+  metric_interval_lower_bound: the lower bound for the metric interval
+  metric_interval_upper_bound: the upper bound for the metric interval
+  scaling_adjustment: the scaling adjustment to be applied when the metric is within the interval
+  EOT
 }
 variable "step_adjustment_upper_bound" {
   default = [
-    {
+    { # start from 2 because this is the max theresold
+      # when SQS messages are between 2 to 10 scale to 1
       metric_interval_lower_bound = "0"
-      metric_interval_upper_bound = "30"
-      scaling_adjustment          = "4"
+      metric_interval_upper_bound = "8"
+      scaling_adjustment          = "1"
     },
-    {
-      metric_interval_lower_bound = "30"
-      metric_interval_upper_bound = "80"
-      scaling_adjustment          = "8"
+    { # when SQS messages are between 10 to 50 scale to 5
+      metric_interval_lower_bound = "8"
+      metric_interval_upper_bound = "48"
+      scaling_adjustment          = "5"
     },
-    {
-      metric_interval_lower_bound = "80"
+    { # when SQS messages are between 50 to infinity scale to 10
+      metric_interval_lower_bound = "48"
       metric_interval_upper_bound = ""
       scaling_adjustment          = "10"
     }
   ]
+  description = <<EOT
+  a list of maps containing the upper bound for the step adjustment (scaling up) 
+  metric_interval_lower_bound: the lower bound for the metric interval
+  metric_interval_upper_bound: the upper bound for the metric interval
+  scaling_adjustment: the scaling adjustment to be applied when the metric is within the interval
+  EOT
+}
+variable "queue_name" {
+  description = "name of the SQS queue"
 }
