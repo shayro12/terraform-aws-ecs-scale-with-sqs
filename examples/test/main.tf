@@ -6,7 +6,7 @@ output "is_localstack" {
 locals {
   name     = "test-autoscaling"
   region   = "us-east-1"
-  vpc_cidr = "10.0.0.0/16"
+  vpc_cidr = "10.10.0.0/16"
   azs      = ["us-east-1a", "us-east-1b", "us-east-1c"]
   tags = {
     Example    = local.name
@@ -25,11 +25,17 @@ module "vpc" {
   name            = "${local.name}-vpc"
   cidr            = local.vpc_cidr
   azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 4)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 5)]
   tags            = local.tags
 }
 
+output "subnets_CIDR" {
+  value = {
+    private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+    public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 5)]
+  }
+}
 module "cluster" {
   source = "cn-terraform/ecs-cluster/aws"
   name   = "test-cluster"
