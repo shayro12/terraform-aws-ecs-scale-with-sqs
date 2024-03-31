@@ -5,7 +5,6 @@
 #------------------------------------------------------------------------------
 # AWS Auto Scaling - Scaling Up Policy
 #------------------------------------------------------------------------------
-
 resource "aws_appautoscaling_policy" "scale_up_policy" {
 
 
@@ -16,10 +15,10 @@ resource "aws_appautoscaling_policy" "scale_up_policy" {
   service_namespace  = "ecs"
 
   step_scaling_policy_configuration {
-    adjustment_type          = "ExactCapacity"
-    cooldown                 = var.cooldown
-    metric_aggregation_type  = "Average"
-    min_adjustment_magnitude = 0
+    adjustment_type          = var.scale_up_step_scaling_policy_configuration.adjustment_type
+    cooldown                 = var.scale_up_step_scaling_policy_configuration.cooldown
+    metric_aggregation_type  = var.scale_up_step_scaling_policy_configuration.metric_aggregation_type
+    min_adjustment_magnitude = var.scale_up_step_scaling_policy_configuration.min_adjustment_magnitude
 
     dynamic "step_adjustment" {
       for_each = var.step_adjustment_upper_bound
@@ -48,9 +47,10 @@ resource "aws_appautoscaling_policy" "scale_down_policy" {
   service_namespace  = "ecs"
 
   step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = var.cooldown
-    metric_aggregation_type = "Average"
+    adjustment_type          = var.scale_down_step_scaling_policy_configuration.adjustment_type
+    cooldown                 = var.scale_down_step_scaling_policy_configuration.cooldown
+    metric_aggregation_type  = var.scale_down_step_scaling_policy_configuration.metric_aggregation_type
+    min_adjustment_magnitude = var.scale_down_step_scaling_policy_configuration.min_adjustment_magnitude
 
     dynamic "step_adjustment" {
       for_each = var.step_adjustment_lower_bound
@@ -64,18 +64,19 @@ resource "aws_appautoscaling_policy" "scale_down_policy" {
   depends_on = [aws_appautoscaling_target.scale_target]
 }
 
+
 #------------------------------------------------------------------------------
 # AWS Auto Scaling - CloudWatch Alarm SQS High
 #------------------------------------------------------------------------------
 resource "aws_cloudwatch_metric_alarm" "custom_high" {
   alarm_name          = "${var.name_prefix}-sqs-high"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = var.max_evaluation_period
-  metric_name         = var.metric_name
-  namespace           = "AWS/SQS"
-  period              = var.max_period
-  statistic           = "Maximum"
-  threshold           = var.max_threshold
+  comparison_operator = var.aws_cloudwatch_metric_alarm_config_high.comparison_operator
+  evaluation_periods  = var.aws_cloudwatch_metric_alarm_config_high.evaluation_periods
+  metric_name         = var.aws_cloudwatch_metric_alarm_config_high.metric_name
+  namespace           = var.aws_cloudwatch_metric_alarm_config_high.namespace
+  period              = var.aws_cloudwatch_metric_alarm_config_high.period
+  statistic           = var.aws_cloudwatch_metric_alarm_config_high.statistic
+  threshold           = var.aws_cloudwatch_metric_alarm_config_high.threshold
   dimensions = {
     QueueName = "${var.queue_name}"
   }
@@ -88,13 +89,13 @@ resource "aws_cloudwatch_metric_alarm" "custom_high" {
 #------------------------------------------------------------------------------
 resource "aws_cloudwatch_metric_alarm" "custom_low" {
   alarm_name          = "${var.name_prefix}-sqs-low"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods  = var.min_evaluation_period
-  metric_name         = var.metric_name
-  namespace           = "AWS/SQS"
-  period              = var.min_period
-  statistic           = "Average"
-  threshold           = var.min_threshold
+  comparison_operator = var.aws_cloudwatch_metric_alarm_config_low.comparison_operator
+  evaluation_periods  = var.aws_cloudwatch_metric_alarm_config_low.evaluation_periods
+  metric_name         = var.aws_cloudwatch_metric_alarm_config_low.metric_name
+  namespace           = var.aws_cloudwatch_metric_alarm_config_low.namespace
+  period              = var.aws_cloudwatch_metric_alarm_config_low.period
+  statistic           = var.aws_cloudwatch_metric_alarm_config_low.statistic
+  threshold           = var.aws_cloudwatch_metric_alarm_config_low.threshold
   dimensions = {
     QueueName = "${var.queue_name}"
   }

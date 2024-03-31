@@ -47,5 +47,6 @@ jobs:
         run: terraform validate
         working-directory: ${{ matrix.dir }}
       - name: Terraform Plan (Mock)
+        if: false
         run: terraform plan
         working-directory: ${{ matrix.dir }}

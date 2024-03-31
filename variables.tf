@@ -117,3 +117,82 @@ variable "step_adjustment_upper_bound" {
 variable "queue_name" {
   description = "name of the SQS queue"
 }
+
+
+variable "scale_up_step_scaling_policy_configuration" {
+  description = "Step Scaling Policy Configuration for Scale Up"
+  type = object({
+    adjustment_type          = string
+    cooldown                 = number
+    metric_aggregation_type  = string
+    min_adjustment_magnitude = number
+  })
+  default = {
+    adjustment_type          = "ExactCapacity"
+    cooldown                 = 60
+    metric_aggregation_type  = "Average"
+    min_adjustment_magnitude = 0
+  }
+
+
+
+}
+variable "scale_down_step_scaling_policy_configuration" {
+  description = "Step Scaling Policy Configuration for Scale Down"
+  type = object({
+    adjustment_type          = string
+    cooldown                 = number
+    metric_aggregation_type  = string
+    min_adjustment_magnitude = number
+  })
+  default = {
+    adjustment_type          = "ExactCapacity"
+    cooldown                 = 60
+    metric_aggregation_type  = "Average"
+    min_adjustment_magnitude = 0
+  }
+}
+variable "aws_cloudwatch_metric_alarm_config_high" {
+  default = {
+    comparison_operator = "GreaterThanOrEqualToThreshold"
+    evaluation_periods  = 1
+    metric_name         = "ApproximateNumberOfMessagesVisible"
+    namespace           = "AWS/SQS"
+    period              = 10
+    statistic           = "Maximum"
+    threshold           = 2
+
+  }
+  type = object({
+    comparison_operator = string
+    evaluation_periods  = number
+    metric_name         = string
+    namespace           = string
+    period              = number
+    statistic           = string
+    threshold           = number
+  })
+
+}
+variable "aws_cloudwatch_metric_alarm_config_low" {
+  default = {
+    comparison_operator = "LessThanOrEqualToThreshold"
+    evaluation_periods  = 1
+    metric_name         = "ApproximateNumberOfMessagesVisible"
+    namespace           = "AWS/SQS"
+    period              = 10
+    statistic           = "Average"
+    threshold           = 100
+
+  }
+  type = object({
+    comparison_operator = string
+    evaluation_periods  = number
+    metric_name         = string
+    namespace           = string
+    period              = number
+    statistic           = string
+    threshold           = number
+  })
+
+}
